@@ -94,7 +94,7 @@
 
 [4]西东.汉字从电码到unicode历史拾零[EB/OL].2025.12.15. https://zhuanlan.zhihu.com/p/7069306866   
 
-[5]ChaseDream. 标准中文电码简介[EB/OL].https://www.chasedream.com/show.aspx?id=4487&cid=30.
+[5]ChaseDream. 标准中文电码简介[EB/OL].2009.06.08. https://www.chasedream.com/show.aspx?id=4487&cid=30.
 
 [6]ChaseDream. 标准中文电码查询[CP/OL].https://apps.chasedream.com/chinese-commercial-code/
 
