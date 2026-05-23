@@ -3,10 +3,7 @@
 #### Description
 这是一种基于汉语言文学的语言学特征的标准中文电码扩展体系，适合古籍活化工程的跨学科基础项目
 
-#### Software Architecture
-Software architecture description
-
-#### ### 编码规则（就三步）
+####  编码规则（就三步）
 
 一个汉字 → 声母码 + 标准中文电码 + 声调码 = 6-7位数字
 
