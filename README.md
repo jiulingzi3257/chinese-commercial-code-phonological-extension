@@ -79,11 +79,11 @@
 
 2545073   2545113      1932191          1411663
 
-窈             窕          淑              女，
+窈            窕          淑              女，
 
 1006891    2613113      811704         1766332
 
-君              子          好         逑。
+君              子         好         逑。
 
 ### 参考文献：
 [1]王宁，主编.古代汉语[M]北京：北京大学出版社.2009.
@@ -92,13 +92,13 @@
 
 [3]李绅，胡韧奋，王立军.古汉语大语言模型的构建及应用研究[J].语言战略研究，2024（5）：22-23.
 
-[4]西东.汉字从电码到unicode历史拾零[EB/OL]https://zhuanlan.zhihu.com/p/7069306866   .2025.12.15.8:21
+[4]西东.汉字从电码到unicode历史拾零[EB/OL].2025.12.15. https://zhuanlan.zhihu.com/p/7069306866   
 
 [5]ChaseDream. 标准中文电码简介[EB/OL].https://www.chasedream.com/show.aspx?id=4487&cid=30.
 
 [6]ChaseDream. 标准中文电码查询[CP/OL].https://apps.chasedream.com/chinese-commercial-code/
 
-[7]九灵子.我与DeepSeek关于国学与密码学的探讨论[EB/OL].https://chat.deepseek.com/share/3vweifoxajhbaz9jzx.   2026.5.23.16:51
+[7]九灵子.我与DeepSeek关于国学与密码学的探讨论[EB/OL].2026.5.23. https://chat.deepseek.com/share/3vweifoxajhbaz9jzx   .
 
  
 
