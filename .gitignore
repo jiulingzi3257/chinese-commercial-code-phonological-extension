@@ -67,3 +67,4 @@ logs/
 
 # 环境变量（可能包含 API Key）
 .env
+*.pyc
