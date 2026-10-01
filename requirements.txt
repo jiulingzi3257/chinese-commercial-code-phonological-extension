@@ -1,0 +1,21 @@
+# 标准中文电码声学扩展项目 —— 依赖清单
+# =====================================
+#
+# 本项目所有代码（码本校勘工具.py / stat_codes.py / test_audit_suite.py / 模式C加密器.py）
+# 均仅使用 Python 标准库，无任何第三方依赖。
+#
+# 本文件刻意保留为"空清单"：
+#   1. 使协作者与 CI 可统一执行 `pip install -r requirements.txt`，命令永远可安全通过；
+#   2. 作为依赖声明的唯一入口——未来新增第三方包时只需修改本文件。
+#
+# 环境要求：
+#   Python >= 3.7（需要 dataclasses 与 f-string；测试套件的 stdout reconfigure 带守卫，兼容更低版本）
+#   操作系统：Windows / Linux / macOS 均可（路径均基于 __file__ 相对定位，全链路显式 UTF-8）
+#
+# 可选网络：
+#   码本校勘工具.py 的多源仲裁（ChaseDream）需访问外网；
+#   完全离线运行请加参数：python 码本校勘工具.py --no-cd
+#
+# 未来扩展（示例，按需取消注释）：
+#   接入语保工程 / 审音字库等需要 HTTP 客户库的数据源时：
+#   requests>=2.31
