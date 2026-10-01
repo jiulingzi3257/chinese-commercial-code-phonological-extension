@@ -1,18 +1,69 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# ============================================================
+# 中文 NLP 声学扩展项目 - .gitignore
+# 领域: 词分类/词性标注 + 传统电码声学扩展
+# ============================================================
 
-# Other files and folders
-.settings/
+# ---------- Python ----------
+# 编译缓存（当前仓库已有 .cpython-314.pyc）
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+# 虚拟环境
+venv/
+.venv/
+env/
+.conda/
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# 分发包
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ---------- 数据中间产物 ----------
+# 保留原始数据集，忽略处理过程中的临时 CSV
+temp_*.csv
+tmp_*.csv
+output_*.csv
+processed_*.csv
+*_backup.csv
+
+# Excel 中间文件（~ 开头的临时文件）
+~$*.xlsx
+
+# ---------- 模型与缓存 ----------
+# NLP 模型文件（体积大，建议用 DVC 或 Git LFS）
+*.pkl
+*.joblib
+*.bin
+*.model
+*.checkpoint
+
+# Hugging Face 缓存
+.huggingface/
+cache/
+downloads/
+
+# ---------- 数据科学工具 ----------
+# Jupyter Notebook 检查点
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 日志
+*.log
+logs/
+
+# 环境变量（可能包含 API Key）
+.env
