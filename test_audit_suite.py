@@ -19,9 +19,13 @@ import io
 import os
 import sys
 import csv
-import types
 import tempfile
-import traceback
+
+# 输出编码兜底：在 GBK 控制台/C locale 容器等受限环境下强制 UTF-8 输出，
+# 避免打印扩展区汉字（如 𰾠 U+30FA0）时抛 UnicodeEncodeError 中断测试。
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
 
 # 以本文件所在目录为基准，跨平台可用（Windows/Linux/macOS）
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
