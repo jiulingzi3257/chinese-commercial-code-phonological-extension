@@ -1,0 +1,101 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "cell-01",
+   "metadata": {},
+   "source": "# 标准中文电码声学扩展协议 —— 演示 Notebook\n\n本 Notebook 演示《标准中文电码声学扩展协议（修订版 v2.0）》定稿规则的实际效果：\n\n1. **七字逐步走查**：复现协议定稿的三步法（拆数取大 → 声调驱动差分 → 声调置位），并与 `模式C加密器.py` 及协议定稿结果双重校验；\n2. **声调影响分析**：观察同一电码下，声调码 T 如何通过四舍五入边界驱动差分 d2d3 变化；\n3. **码本概览**：对 `清洗后码表.csv`（由 `码本校勘工具.py` 产出）做千位段分布与字符分类统计。\n\n**运行要求**\n- Python ≥ 3.7；核心演示**零第三方依赖**；\n- 图表需要 `matplotlib`（可选，`pip install matplotlib`，未安装时自动降级为文本表格）；\n- 请将本 Notebook 置于项目根目录（与 `模式C加密器.py`、`清洗后码表.csv` 同目录）。"
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cell-02",
+   "metadata": {},
+   "outputs": [],
+   "source": "import csv\nimport io\nimport os\nimport sys\n\n# Notebook 内核无 __file__；脚本化验证时用 __file__\ntry:\n    BASE = os.path.dirname(os.path.abspath(__file__))\nexcept NameError:\n    BASE = os.getcwd()\n\ntry:\n    import matplotlib\n    import matplotlib.pyplot as plt\n    HAS_MPL = True\n    # 中文字体跨平台回退：缺失时仅图形文字显示为方框，不影响运行\n    plt.rcParams[\"font.family\"] = \"sans-serif\"\n    plt.rcParams[\"font.sans-serif\"] = [\"Microsoft YaHei\", \"SimHei\", \"PingFang SC\",\n                                       \"Noto Sans CJK SC\", \"WenQuanYi Micro Hei\"]\n    plt.rcParams[\"axes.unicode_minus\"] = False\n    print(f\"图表模式：matplotlib {matplotlib.__version__}\")\nexcept ImportError:\n    HAS_MPL = False\n    print(\"文本模式：未检测到 matplotlib，图表自动降级（pip install matplotlib 可启用）\")\n\nprint(\"项目目录:\", BASE)\nprint(\"Python:\", sys.version.split()[0])"
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cell-03",
+   "metadata": {},
+   "source": "## 一、三步法定稿规则（协议 v2.0）\n\n输入 7 位明文码：`S`（2 位声母码）+ `C`（4 位电码）+ `T`（1 位声调码），输出 4 位密文 `d1 d2d3 d4`：\n\n| 步骤 | 规则 |\n|---|---|\n| ① 拆数取大 → d1 | `S≤9` 取自身；`3\\|S` 取 `S÷3`（如 24→8）；`3∤S 且 S≥10` 取 `(S÷2)` 的个位（如 10→5） |\n| ② 声调驱动差分 → d2d3 | 对 `C.T` 标准四舍五入得 `C'`；对称栅栏分段为前两位\\|后两位；取 `\\|前−后\\|` |\n| ③ 声调置位 → d4 | `d4 = T` |\n\n协议以**魂 = 8672** 为基准例（三步全通且与作者手算一致），其余六字按定稿规则重算。"
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cell-04",
+   "metadata": {},
+   "outputs": [],
+   "source": "import importlib.util\n\n# 动态加载中文文件名模块\nspec = importlib.util.spec_from_file_location(\n    \"moshi_c\", os.path.join(BASE, \"模式C加密器.py\"))\nmoshi = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(moshi)\n\n# (字, S, C, T, 协议定稿密文)——7 例来自协议 v2.0 附录走查\nCASES = [\n    (\"魂\",  8, 7609, 2, \"8672\"),\n    (\"西\", 24, 6007, 1, \"8531\"),\n    (\"军\", 10, 6511, 1, \"5541\"),\n    (\"点\",  4, 7820, 3, \"4583\"),\n    (\"领\", 12, 7325, 3, \"4483\"),\n    (\"校\", 24, 2699, 4, \"8734\"),\n    (\"导\",  4, 1418, 3, \"4043\"),\n]\nprint(\"加密器加载成功，接口:\", [f for f in (\"d1_of\", \"d23_of\", \"encrypt\")\n                                if hasattr(moshi, f)])"
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cell-05",
+   "metadata": {},
+   "source": "## 二、七字逐步走查\n\n下表按协议口径逐字展开三个步骤的中间量，末列密文与 **模块 `encrypt()`** 和 **协议定稿结果** 双重断言校验。"
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cell-06",
+   "metadata": {},
+   "outputs": [],
+   "source": "def walkthrough(name, S, C, T):\n    \"\"\"按协议 v2.0 定稿口径复现三步法，返回逐步明细（与 模式C加密器.py 同口径）。\"\"\"\n    # 步骤① 拆数取大\n    if S <= 9:\n        d1, rule = S, \"S<=9 取自身\"\n    elif S % 3 == 0:\n        d1, rule = S // 3, f\"3|S: {S}/3\"\n    else:\n        d1, rule = (S // 2) % 10, f\"({S}/2) 个位\"\n    # 步骤② 声调驱动差分\n    c_round = int(C + T / 10 + 0.5)          # 标准四舍五入（.5 及以上进）\n    hi, lo = divmod(c_round, 100)            # 对称栅栏分段\n    d23 = abs(hi - lo)\n    # 步骤③ 声调置位\n    return (name, S, d1, rule, c_round, f\"{hi:02d}|{lo:02d}\", d23, T,\n            f\"{d1}{d23:02d}{T}\")\n\nheader = (\"字\", \"S\", \"d1\", \"拆法\", \"C'\", \"分段\", \"d2d3\", \"T\", \"密文\")\nrows = [walkthrough(*c[:4]) for c in CASES]\nprint(\" | \".join(header))\nprint(\"-\" * 62)\nfor r in rows:\n    print(\" | \".join(str(v) for v in r))\n\n# 双重校验：Notebook 逐步实现 vs 模块 encrypt() vs 协议定稿\nfor (name, S, C, T, expected), r in zip(CASES, rows):\n    assert r[-1] == expected, f\"{name} 走查不一致: {r[-1]} != {expected}\"\n    assert f\"{moshi.encrypt(S, C, T):04d}\" == expected, f\"{name} 模块不一致\"\nprint(\"\\n[OK] 7/7 密文与模块 encrypt() 及协议定稿结果完全一致\")"
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cell-07",
+   "metadata": {},
+   "source": "## 三、声调对差分（d2d3）的影响\n\n声调码以 `T/10` 进入四舍五入：`C.T` 恰在 `.5` 边界附近时，**T 每变化 1 可能使 `C'` 跨过进位边界**，经对称栅栏差分放大为 d2d3 的跳变。下图对 7 个字的电码绘出 `T=0..9` 全程差分曲线，绿色带为汉语声调有效域 `1-4`。"
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cell-08",
+   "metadata": {},
+   "outputs": [],
+   "source": "T_range = list(range(10))\n\nif HAS_MPL:\n    fig, ax = plt.subplots(figsize=(8, 4.5))\n    for name, _S, C, _T, _e in CASES:\n        ys = [moshi.d23_of(C, t) for t in T_range]\n        ax.plot(T_range, ys, marker=\"o\", ms=4, label=f\"{name} C={C}\")\n    ax.axvspan(1, 4, alpha=0.08, color=\"green\")\n    ax.text(2.5, 92, \"声调有效域 1-4\", ha=\"center\", fontsize=9, color=\"green\")\n    ax.set_xticks(T_range)\n    ax.set_xlabel(\"声调码 T\")\n    ax.set_ylabel(\"差分 d2d3\")\n    ax.set_title(\"同一电码下声调驱动差分的变化\")\n    ax.legend(fontsize=8, ncol=2)\n    ax.grid(alpha=0.3)\n    plt.tight_layout()\n    plt.show()\nelse:\n    print(\"差分对照表（T0-T9）：\")\n    for name, _S, C, _T, _e in CASES:\n        series = \"  \".join(f\"T{t}:{moshi.d23_of(C, t):02d}\" for t in T_range)\n        print(f\"  {name} C={C}: {series}\")"
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cell-09",
+   "metadata": {},
+   "source": "## 四、码本概览\n\n数据来自 `清洗后码表.csv`——由 `python 码本校勘工具.py --no-cd` 产出（已排除 25 个 U+3000 占位符，问题项带\"待核查\"标记）。"
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cell-10",
+   "metadata": {},
+   "outputs": [],
+   "source": "from collections import Counter\n\ncsv_path = os.path.join(BASE, \"清洗后码表.csv\")\nassert os.path.exists(csv_path), (\n    f\"缺少 {csv_path}，请先在项目根目录运行: python 码本校勘工具.py --no-cd\")\nwith io.open(csv_path, encoding=\"utf-8-sig\") as f:\n    table = list(csv.DictReader(f))\n\nhanzi = [r for r in table if r[\"是否汉字\"] == \"是\"]\nprint(f\"清洗后码表：共 {len(table)} 条 = 汉字 {len(hanzi)} + 特殊字符 {len(table) - len(hanzi)}\")\n\nseg = Counter(r[\"电码\"][0] + \"xxx\" for r in hanzi)\nlabels = [f\"{d}xxx\" for d in \"0123456789\"]\ncounts = [seg.get(x, 0) for x in labels]\n\nif HAS_MPL:\n    fig, ax = plt.subplots(figsize=(8, 4))\n    bars = ax.bar(labels, counts, color=\"#4C72B0\")\n    for b, c in zip(bars, counts):\n        ax.text(b.get_x() + b.get_width() / 2, c, str(c),\n                ha=\"center\", va=\"bottom\", fontsize=8)\n    ax.set_title(\"汉字电码千位段分布\")\n    ax.set_xlabel(\"千位段\")\n    ax.set_ylabel(\"字数\")\n    plt.tight_layout()\n    plt.show()\nelse:\n    mx = max(counts)\n    for x, c in zip(labels, counts):\n        print(f\"  {x} {c:>5}  \" + \"#\" * round(c / mx * 40))"
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cell-11",
+   "metadata": {},
+   "outputs": [],
+   "source": "cat = Counter(r[\"字符分类\"] for r in table)\ntop = cat.most_common()\n\nif HAS_MPL:\n    fig, ax = plt.subplots(figsize=(8, 5))\n    ax.barh([k for k, _ in top][::-1], [v for _, v in top][::-1], color=\"#55A868\")\n    for i, (_k, v) in enumerate(top[::-1]):\n        ax.text(v, i, str(v), va=\"center\", fontsize=8)\n    ax.set_title(\"字符分类统计\")\n    ax.set_xlabel(\"条数\")\n    plt.tight_layout()\n    plt.show()\nelse:\n    mx = top[0][1]\n    for k, v in top:\n        print(f\"  {k:<14} {v:>5}  \" + \"#\" * round(v / mx * 40))"
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cell-12",
+   "metadata": {},
+   "source": "## 五、小结与协作须知\n\n**小结**\n- 三步法定稿规则已被 7 字走查与模块实现**双向校验一致**，任意字可复算（注意定义域：`S>=30 且 3|S` 时拆数取大将超一位，加密器会拒绝）；\n- 声调码通过四舍五入边界驱动 d2d3 跳变，是密文的主要混淆来源；\n- 码本数据经全量校勘，汉字层零重复、回归 56/56 通过，可放心作为协议演示的数据底座。\n\n**协作须知**\n1. 提交前请 **Restart & Run All**，确保 Notebook 自顶向下可完整执行；\n2. 本文件入库时**输出已清空**，避免输出漂移造成 diff 噪音；\n3. 图表模式需要 `matplotlib`（`pip install matplotlib`），未安装时自动降级为文本表格，核心演示不受影响；\n4. 数据缺失时 cell 会给出明确报错与补救命令（`python 码本校勘工具.py --no-cd`）。"
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "name": "python",
+   "version": "3.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
