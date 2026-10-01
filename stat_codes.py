@@ -26,3 +26,4 @@ print('=== 9900-9999 段全部内容 ===')
 for c, ch in sorted(pairs):
     if c >= '9900':
         print(f'{c}: {ch} (CJK={is_cjk(ch)})')
+
