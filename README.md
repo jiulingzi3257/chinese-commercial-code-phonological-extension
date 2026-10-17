@@ -12,7 +12,7 @@ The documentation in this repository is primarily in Simplified Chinese for acce
 
 ## 为什么要做这件事
 
-四位标准中文电码只记录汉字形体，不携带读音信息。面对古籍海量多音字、通假异读字、破读字，单一字形编码无法区分"箪食"（sì）与"食马者"（sì）、"郦食其"（yì）这类语境异读。本扩展把音韵学维度叠回电码，使编码同时承载形、声、调三层信息：
+四位标准中文电码只记录汉字形体，不携带读音信息。面对古籍海量多音字、通假异读字、破读字，单一字形编码无法区分"箪食"（shí，饭食）与"食马者"（sì，喂食）、"郦食其"（yì，人名）这类语境异读。本扩展把音韵学维度叠回电码，使编码同时承载形、声、调三层信息：
 
 - **TTS 合成**：多音字按位注册（声母+电码+声调），可直接定位正确读音；
 - **古籍 OCR/NLP**：扩展编码为古汉语大模型提供音形义融合的 token 锚点；
@@ -36,9 +36,9 @@ The documentation in this repository is primarily in Simplified Chinese for acce
 
 ```
 汉 → 08 3352 4 → 0833524
-食（箪食，sì）→ 19 7380 4 → 1973804
-食（食品，shí）→ 19 7380 2 → 1973802
-郦食其（yì）→ 25 7380 4 → 2573804
+食（箪食，饭食 shí）→ 19 7380 2 → 1973802
+食（食马者，喂食 sì）→ 19 7380 4 → 1973804
+郦食其（人名 yì）→ 25 7380 4 → 2573804
 ```
 
 10 位全息码在 7 位基础上再加韵母 3 位，用于需要完整音节锚定的研究场景，规范见 [`docs/`](docs/)。
@@ -50,7 +50,7 @@ The documentation in this repository is primarily in Simplified Chinese for acce
 ```bash
 python tools/码本校勘工具.py            # 本地全量校勘（联网仲裁需配置源）
 python tools/码本校勘工具.py --no-cd    # 跳过联网，纯本地校验
-python test_audit_suite.py              # 76 项断言回归
+python tools/test_audit_suite.py        # 76 项断言回归
 ```
 
 v1.2 实证：7317 条码字对解析、回归 56/56 通过、勘误 29 条。支持通过 `CodeSource` 抽象基类接入外部码本源（语保工程、审音字库等），多源仲裁策略 unanimous / majority / priority 可选。
@@ -62,7 +62,7 @@ v1.2 实证：7317 条码字对解析、回归 56/56 通过、勘误 29 条。�
 | `data/dianma_ben.html` | 《标准电码本（修订本）》1983 年第 3 版电子化校勘版（7317 条） |
 | `data/清洗后码表.csv` | 经本工具清洗后的码表 |
 | `data/勘误表.csv` | 校勘发现的 29 条勘误 |
-| `data/声学扩展规则的字母表.xlsx` | 声母/韵母编码字母表（数据科学用） |
+| `docs/声学扩展规则的字母表（数据科学用）.xlsx` | 声母/韵母编码字母表（数据科学用） |
 
 ## 相关资源 / Related Resources
 
