@@ -78,17 +78,17 @@ v1.2 实证：7317 条码字对解析、回归 56/56 通过、勘误 29 条。�
 
 > 林俊森. 标准中文电码的声学与音韵学扩展协议 v2.1[S/OL]. GitHub: jiulingzi3257/chinese-commercial-code-phonological-extension, 2026.
 
-## 国内镜像 / Gitee Mirror
+## 国内主仓库 / Gitee Mirror
 
-国内高校、学界访问稳定镜像（CC0）：
+国内高校、学界访问稳定主仓库（CC0）：
 <https://gitee.com/intellectualdisability-of-jun-sen/jiyuHANYUYANWENXUEYUYANXUEtezhengdechasedreamkuozhantioxi>
 
 欢迎通过 GitHub Issues 提出建议、批评或合作；长文本训诂讨论欢迎附文献出处。
-International peers are welcome to open issues for suggestions, critiques, or collaboration.
+International peers are welcome to open issues and GitHub Discussion for suggestions, critiques, or collaboration. I will reply in both Chinese and English in a brief manner.
 
 ## 许可证 / License
 
 - **代码**（`tools/` 下脚本）：[MIT License](LICENSE)
 - **规范文本与文档**（`docs/`、本 README）：[CC BY 4.0](docs/LICENSE) — 署名即可，不限衍生用途
 
-> Gitee 镜像沿用 CC0-1.0；GitHub 主仓库采用上述组合许可证，以保留署名权并便于学术引用。
+> Gitee 主仓库沿用 CC0-1.0；GitHub 主仓库采用上述组合许可证，以保留署名权并便于学术引用。
