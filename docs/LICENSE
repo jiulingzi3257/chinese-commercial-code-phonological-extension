@@ -1,0 +1,19 @@
+# 文档与规范文本许可证 / Documentation License
+
+本目录（`docs/`）下的规范草案、研究报告、参考文献审计等文档，采用
+**Creative Commons Attribution 4.0 International (CC BY 4.0)** 许可证。
+
+You are free to share and adapt the documentation in this directory
+(`docs/`) for any purpose, even commercially, under the following terms:
+
+- **署名 / Attribution (BY)**: You must give appropriate credit, provide a
+  link to the license, and indicate if changes were made.
+
+版权 / Copyright (c) 2026 林俊森 (Lin Junsen / jiulingzi3257)
+
+完整法律文本见 <https://creativecommons.org/licenses/by/4.0/deed.zh-hans>
+（中译）与 <https://creativecommons.org/licenses/by/4.0/legalcode>（法定文本）。
+
+---
+
+说明：本目录文档不含可执行加密算法；加解密层研究材料不在 GitHub 公开仓库内。
