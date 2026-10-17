@@ -78,7 +78,7 @@ v1.2 实证：7317 条码字对解析、回归 56/56 通过、勘误 29 条。�
 
 > 林俊森. 标准中文电码的声学与音韵学扩展协议 v2.1[S/OL]. GitHub: jiulingzi3257/chinese-commercial-code-phonological-extension, 2026.
 
-## 国内主仓库 / Gitee Mirror
+## 国内主仓库 / Gitee main repository
 
 国内高校、学界访问稳定主仓库（CC0）：
 <https://gitee.com/intellectualdisability-of-jun-sen/jiyuHANYUYANWENXUEYUYANXUEtezhengdechasedreamkuozhantioxi>
