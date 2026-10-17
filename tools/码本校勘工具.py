@@ -273,6 +273,7 @@ class ArbitrationEngine:
 # ============================================================
 # 内置数据源实现
 # ============================================================
+
 class ChaseDreamSource(CodeSource):
     """
     ChaseDream 在线中文电码查询数据源。
@@ -693,7 +694,7 @@ class DianmaAuditor:
         lines.append("# 标准中文电码全量校勘报告")
         lines.append("")
         lines.append(f"> 校勘时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        lines.append("> 数据来源：《标准电码本（修订本）》1983年第3版 电子化校勘版")
+        lines.append(f"> 数据来源：《标准电码本（修订本）》1983年第3版 电子化校勘版")
         if self.arbitration_engine and self.arbitration_engine.sources:
             src_desc = "、".join(f"{s.name}({s.version})" for s in self.arbitration_engine.sources)
             lines.append(f"> 多源仲裁：{src_desc}")
@@ -873,3 +874,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
